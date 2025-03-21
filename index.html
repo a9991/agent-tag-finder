@@ -13,14 +13,14 @@
     header img { height: 60px; margin-right: 15px; border-radius: 8px; }
     header h1 { font-size: 2rem; margin: 0; color: #2b2b2b; }
     .lang-toggle { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-    .lang-toggle button { padding: 10px 16px; border-radius: 20px; border: 1px solid #ffce00; background-color: #fff; cursor: pointer; font-weight: bold; }
+    .lang-toggle button { padding: 8px 12px; border-radius: 20px; border: 1px solid #ffce00; background-color: #fff; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
     .lang-toggle button.active { background-color: #ffce00; color: #000; }
     .search-bar { position: relative; width: 100%; margin-bottom: 20px; }
-    .search-bar input { width: 100%; padding: 12px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; }
-    .clear-btn { position: absolute; right: 10px; top: 10px; cursor: pointer; border: none; background: none; font-size: 1.2rem; color: #777; }
-    .description-text { margin-bottom: 15px; color: #4d4d4d; text-align: center; font-size: 1rem; }
-    .group-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
-    .group-btn { padding: 6px 12px; border-radius: 20px; border: none; background-color: #ffce00; cursor: pointer; font-size: 0.85rem; }
+    .search-bar input { width: 100%; padding: 10px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; font-size: 0.95rem; }
+    .clear-btn { position: absolute; right: 10px; top: 8px; cursor: pointer; border: none; background: none; font-size: 1.2rem; color: #777; }
+    .description-text { margin-bottom: 18px; color: #4d4d4d; text-align: center; font-size: 0.95rem; }
+    .group-buttons { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 24px; justify-content: center; }
+    .group-btn { padding: 5px 10px; border-radius: 18px; border: none; background-color: #ffce00; cursor: pointer; font-size: 0.78rem; }
     .group-btn.active { background-color: #ff9900; color: #fff; }
     .tag-card { background: #ffffff; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 6px 14px rgba(0,0,0,0.05); }
     .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.2em; }
@@ -45,7 +45,7 @@
       <button class="clear-btn" onclick="clearSearch()">×</button>
     </div>
 
-    <p class="description-text" id="instructionText">Select a language, search, or choose a group below to filter tags. Copy tags easily!</p>
+    <p class="description-text" id="instructionText">Choose your language, then choose a group below to filter the available tags. You can also search using keywords. Once you find the correct tag, copy and paste it on SalesIQ easily!</p>
 
     <div class="group-buttons" id="groupButtonsContainer"></div>
     <div id="tagsContainer"></div>
@@ -75,9 +75,9 @@
       }
 
       function updateInstructionText() {
-        document.getElementById('instructionText').textContent = currentLang === 'ar' 
-          ? 'حدد اللغة، وابحث، واختر مجموعة أدناه لتصفية العلامات. انسخ العلامات بسهولة!' 
-          : 'Select a language, search, or choose a group below to filter tags. Copy tags easily!';
+        document.getElementById('instructionText').textContent = currentLang === 'ar'
+          ? 'اختر لغتك، ثم اختر مجموعة أدناه لتصفية العلامات المتاحة. يمكنك أيضًا البحث باستخدام الكلمات الرئيسية. بمجرد العثور على العلامة الصحيحة، قم بنسخها ولصقها في SalesIQ بسهولة!'
+          : 'Choose your language, then choose a group below to filter the available tags. You can also search using keywords. Once you find the correct tag, copy and paste it on SalesIQ easily!';
       }
 
       async function translateText(text) {
