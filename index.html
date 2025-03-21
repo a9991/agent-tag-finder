@@ -8,7 +8,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@vitalets/google-translate-api/browser.min.js"></script>
   <style>
     body { font-family: 'Helvetica Neue', sans-serif; padding: 20px; background: #fff9f3; color: #333; }
-    h2 { font-size: 2.4rem; margin-bottom: 10px; color: #2b2b2b; }
+    header { display: flex; align-items: center; margin-bottom: 30px; }
+    header img { height: 60px; margin-right: 20px; border-radius: 8px; }
+    h1 { font-size: 2.4rem; margin: 0; color: #2b2b2b; }
     p { font-size: 1.1rem; margin-bottom: 20px; color: #4d4d4d; }
     select, button { margin: 10px 0; padding: 12px; width: 320px; font-size: 1rem; border: 1px solid #ffce00; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); background-color: #fff7e6; color: #333; }
     .language-toggle { margin-bottom: 20px; }
@@ -18,11 +20,16 @@
     .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 10px 16px; border-radius: 8px; border: none; font-size: 1rem; transition: background-color 0.2s, box-shadow 0.2s; }
     .copy-btn:hover { background-color: #ffdf4d; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
     #tagsContainer { margin-top: 35px; }
+    footer { margin-top: 40px; text-align: center; color: #777; font-size: 0.9rem; }
   </style>
 </head>
 <body>
 
-<h2>Agent Tag Finder</h2>
+<header>
+  <img src="https://f.nooncdn.com/nownow/Banners_Prod/now-now-web-landing-2x_kJlhLnX0G.png" alt="NowNow Logo">
+  <h1>NowNow CS Chat Tags Finder</h1>
+</header>
+
 <div class="language-toggle">
   <label>Select Language: </label>
   <select id="languageSwitcher">
@@ -39,6 +46,10 @@
 </select>
 
 <div id="tagsContainer"></div>
+
+<footer>
+  Built for NowNow teams • © 2024
+</footer>
 
 <script>
   const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
