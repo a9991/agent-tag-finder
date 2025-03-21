@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,33 +7,25 @@
   <title>NowNow CS Chat Tags Finder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
-    body { font-family: 'Helvetica Neue', sans-serif; background-color: #fafaf8; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .container { background-color: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 700px; width: 100%; }
-    header { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; background-color: #fff7e6; height: 150px; border-radius: 8px; padding: 10px; }
-    header img { height: 50px; margin-right: 15px; border-radius: 8px; }
+    body { font-family: 'Helvetica Neue', sans-serif; background: #fff9f3; margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 1000px; width: 100%; }
+    header { display: flex; align-items: center; margin-bottom: 30px; justify-content: center; }
+    header img { height: 60px; margin-right: 15px; border-radius: 8px; }
     header h1 { font-size: 2rem; margin: 0; color: #2b2b2b; }
-    .row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
-    .row > * { flex: 1; min-width: 140px; }
+    .lang-toggle { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    .lang-toggle button { padding: 10px 16px; border-radius: 20px; border: 1px solid #ffce00; background-color: #fff; cursor: pointer; font-weight: bold; }
+    .lang-toggle button.active { background-color: #ffce00; color: #000; }
     .search-bar { position: relative; width: 100%; margin-bottom: 20px; }
     .search-bar input { width: 100%; padding: 12px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; }
     .clear-btn { position: absolute; right: 10px; top: 10px; cursor: pointer; border: none; background: none; font-size: 1.2rem; color: #777; }
-    .group-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; justify-content: center; }
-    .group-btn { padding: 10px 20px; border: none; border-radius: 50px; background-color: #ffce00; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s; text-transform: uppercase; font-weight: bold; }
-    .group-btn:hover { background-color: #ffc107; }
-    .tag-card { background-color: #ffffff; border-radius: 20px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 14px rgba(0,0,0,0.05); border: 1px solid #f4f4f4; transition: transform 0.2s; }
-    .tag-card:hover { transform: translateY(-4px); }
+    .description-text { margin-bottom: 15px; color: #4d4d4d; text-align: center; font-size: 1rem; }
+    .group-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
+    .group-btn { padding: 6px 12px; border-radius: 20px; border: none; background-color: #ffce00; cursor: pointer; font-size: 0.85rem; }
+    .group-btn.active { background-color: #ff9900; color: #fff; }
+    .tag-card { background: #ffffff; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 6px 14px rgba(0,0,0,0.05); }
     .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.2em; }
-    .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 10px 16px; border-radius: 8px; border: none; font-size: 1rem; transition: background-color 0.3s; }
+    .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 10px 16px; border-radius: 8px; border: none; }
     .copy-btn.copied { background-color: #88d498; color: #fff; }
-    p.description-text { margin-bottom: 20px; color: #4d4d4d; font-size: 1rem; text-align: center; }
-    .lang-toggle { display: flex; gap: 10px; justify-content: center; }
-    .lang-btn { padding: 8px 14px; border: none; border-radius: 50px; background-color: #ffce00; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; font-weight: bold; }
-    .lang-btn.active { background-color: #ffc107; }
-    @media (max-width: 600px) {
-      header { flex-direction: column; height: auto; padding: 10px; }
-      header img { margin-bottom: 10px; }
-      .row { flex-direction: column; }
-    }
   </style>
 </head>
 <body>
@@ -42,11 +35,9 @@
       <h1>NowNow CS Chat Tags Finder</h1>
     </header>
 
-    <div class="row">
-      <div class="lang-toggle">
-        <button class="lang-btn active" id="lang-en" onclick="updateLanguage('en')">English</button>
-        <button class="lang-btn" id="lang-ar" onclick="updateLanguage('ar')">Arabic</button>
-      </div>
+    <div class="lang-toggle">
+      <button onclick="setLanguage('en')" id="lang-en" class="active">English</button>
+      <button onclick="setLanguage('ar')" id="lang-ar">Arabic</button>
     </div>
 
     <div class="search-bar">
@@ -54,10 +45,9 @@
       <button class="clear-btn" onclick="clearSearch()">×</button>
     </div>
 
-    <p class="description-text" id="instruction-text">Select a language, search, or choose a group below to filter tags. Copy tags easily!</p>
+    <p class="description-text" id="instructionText">Select a language, search, or choose a group below to filter tags. Copy tags easily!</p>
 
     <div class="group-buttons" id="groupButtonsContainer"></div>
-
     <div id="tagsContainer"></div>
 
     <script>
@@ -75,19 +65,19 @@
           displayTags(tagData);
         });
 
-      function updateLanguage(lang) {
+      function setLanguage(lang) {
         currentLang = lang;
-        document.getElementById('lang-en').classList.remove('active');
-        document.getElementById('lang-ar').classList.remove('active');
-        document.getElementById(`lang-${lang}`).classList.add('active');
+        document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+        document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
+        updateInstructionText();
         populateGroupButtons();
         filterTags();
-        updateInstructionText();
       }
 
       function updateInstructionText() {
-        const text = currentLang === 'ar' ? 'حدد لغة ، وابحث ، واختر مجموعة أدناه لتصفية العلامات. انسخ العلامات بسهولة!' : 'Select a language, search, and choose a group below to filter tags. Copy tags easily!';
-        document.getElementById('instruction-text').textContent = text;
+        document.getElementById('instructionText').textContent = currentLang === 'ar' 
+          ? 'حدد اللغة، وابحث، واختر مجموعة أدناه لتصفية العلامات. انسخ العلامات بسهولة!' 
+          : 'Select a language, search, or choose a group below to filter tags. Copy tags easily!';
       }
 
       async function translateText(text) {
@@ -108,15 +98,15 @@
 
         const allBtn = document.createElement('button');
         allBtn.textContent = currentLang === 'ar' ? 'كل العلامات' : 'All Tags';
-        allBtn.className = 'group-btn';
-        allBtn.onclick = () => { activeGroup = ''; filterTags(); };
+        allBtn.className = 'group-btn' + (activeGroup === '' ? ' active' : '');
+        allBtn.onclick = () => { activeGroup = ''; populateGroupButtons(); filterTags(); };
         container.appendChild(allBtn);
 
         for (const category of categories) {
           const btn = document.createElement('button');
-          btn.className = 'group-btn';
+          btn.className = 'group-btn' + (activeGroup === category ? ' active' : '');
           btn.textContent = await translateText(category);
-          btn.onclick = () => { activeGroup = category; filterTags(); };
+          btn.onclick = () => { activeGroup = category; populateGroupButtons(); filterTags(); };
           container.appendChild(btn);
         }
       }
