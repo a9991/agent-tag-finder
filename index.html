@@ -7,23 +7,26 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
     body { font-family: 'Helvetica Neue', sans-serif; background: #fff9f3; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 1000px; width: 100%; }
+    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 950px; width: 100%; }
     header { display: flex; align-items: center; margin-bottom: 20px; justify-content: center; }
     header img { height: 60px; margin-right: 15px; border-radius: 8px; }
     header h1 { font-size: 2rem; margin: 0; color: #2b2b2b; }
-    .description-text { margin-bottom: 16px; color: #4d4d4d; text-align: center; font-size: 0.95rem; line-height: 1.5; }
-    .lang-toggle { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-    .lang-toggle button { padding: 8px 12px; border-radius: 20px; border: 1px solid #ffce00; background-color: #fff; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
-    .lang-toggle button.active { background-color: #ffce00; color: #000; }
+    .lang-toggle { text-align: center; margin-bottom: 20px; }
+    .lang-toggle button { margin: 5px; padding: 10px 20px; border: 1px solid #ffce00; border-radius: 20px; background: #fff; cursor: pointer; font-weight: bold; }
+    .lang-toggle button.active { background: #ffce00; }
     .search-bar { position: relative; width: 100%; margin-bottom: 20px; }
-    .search-bar input { width: 100%; padding: 10px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; font-size: 0.95rem; }
-    .clear-btn { position: absolute; right: 10px; top: 8px; cursor: pointer; border: none; background: none; font-size: 1.2rem; color: #777; }
-    .group-buttons { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 24px; justify-content: center; }
-    .group-btn { padding: 5px 10px; border-radius: 18px; border: none; background-color: #ffce00; cursor: pointer; font-size: 0.78rem; }
-    .group-btn.active { background-color: #ff9900; color: #fff; }
-    .tag-card { background: #ffffff; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 6px 14px rgba(0,0,0,0.05); }
-    .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.2em; }
-    .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 10px 16px; border-radius: 8px; border: none; }
+    .search-bar input { width: 100%; padding: 12px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; }
+    .clear-btn { position: absolute; right: 10px; top: 10px; cursor: pointer; border: none; background: none; font-size: 1.2rem; color: #777; }
+    p.instructions { text-align: center; margin-bottom: 20px; font-size: 1rem; }
+    .group-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    .group-btn { padding: 8px 14px; border: none; border-radius: 20px; background-color: #ffce00; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s; }
+    .group-btn.active { background-color: #ffa500; }
+    .group-btn:hover { background-color: #ffc107; }
+    #tagsContainer { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    .tag-card { background: #ffffff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f4f4f4; transition: transform 0.2s; }
+    .tag-card:hover { transform: translateY(-4px); }
+    .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.1em; }
+    .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 8px 14px; border-radius: 8px; border: none; font-size: 0.9rem; transition: background-color 0.3s; }
     .copy-btn.copied { background-color: #88d498; color: #fff; }
   </style>
 </head>
@@ -33,25 +36,22 @@
       <img src="https://f.nooncdn.com/nownow/Banners_Prod/now-now-web-landing-2x_kJlhLnX0G.png" alt="NowNow Logo">
       <h1>NowNow CS Chat Tags Finder</h1>
     </header>
-
-    <p class="description-text" id="instructionText">
-      Choose your language, then select a group below to filter the available tags.<br>
-      You can also search using keywords. Once you find the correct tag, copy and paste it on SalesIQ easily!
+    <p class="instructions">
+      Choose your language, then select a group below to filter the available tags. <br>
+      You can also search using keywords. <br>Find the correct tag, copy and paste it on SalesIQ easily!
     </p>
-
     <div class="lang-toggle">
-      <button onclick="setLanguage('en')" id="lang-en" class="active">English</button>
-      <button onclick="setLanguage('ar')" id="lang-ar">Arabic</button>
+      <button id="enBtn" class="active" onclick="setLanguage('en')">English</button>
+      <button id="arBtn" onclick="setLanguage('ar')">Arabic</button>
     </div>
-
     <div class="search-bar">
-      <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="filterTags()">
+      <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="searchInputChanged()">
       <button class="clear-btn" onclick="clearSearch()">×</button>
     </div>
-
     <div class="group-buttons" id="groupButtonsContainer"></div>
     <div id="tagsContainer"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
       const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
       let tagData = [];
@@ -69,17 +69,10 @@
 
       function setLanguage(lang) {
         currentLang = lang;
-        document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-        document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
-        updateInstructionText();
+        document.getElementById('enBtn').classList.toggle('active', lang === 'en');
+        document.getElementById('arBtn').classList.toggle('active', lang === 'ar');
         populateGroupButtons();
         filterTags();
-      }
-
-      function updateInstructionText() {
-        document.getElementById('instructionText').innerHTML = currentLang === 'ar'
-          ? 'اختر لغتك، ثم اختر مجموعة أدناه لتصفية العلامات المتاحة.<br> يمكنك أيضًا البحث باستخدام الكلمات الرئيسية. بمجرد العثور على العلامة الصحيحة، قم بنسخها ولصقها في SalesIQ بسهولة!'
-          : 'Choose your language, then select a group below to filter the available tags.<br>You can also search using keywords. Once you find the correct tag, copy and paste it on SalesIQ easily!';
       }
 
       async function translateText(text) {
@@ -100,33 +93,36 @@
 
         const allBtn = document.createElement('button');
         allBtn.textContent = currentLang === 'ar' ? 'كل العلامات' : 'All Tags';
-        allBtn.className = 'group-btn' + (activeGroup === '' ? ' active' : '');
-        allBtn.onclick = () => { 
-          activeGroup = ''; 
-          document.getElementById('searchInput').value = ''; 
-          populateGroupButtons(); 
-          filterTags(); 
-        };
+        allBtn.className = 'group-btn';
+        allBtn.onclick = () => { activeGroup = ''; filterTags(); highlightActiveGroup(); };
         container.appendChild(allBtn);
 
         for (const category of categories) {
           const btn = document.createElement('button');
-          btn.className = 'group-btn' + (activeGroup === category ? ' active' : '');
+          btn.className = 'group-btn';
           btn.textContent = await translateText(category);
-          btn.onclick = () => { 
-            activeGroup = category; 
-            document.getElementById('searchInput').value = ''; 
-            populateGroupButtons(); 
-            filterTags(); 
-          };
+          btn.setAttribute('data-group', category);
+          btn.onclick = () => { activeGroup = category; filterTags(); highlightActiveGroup(); };
           container.appendChild(btn);
         }
+        highlightActiveGroup();
+      }
+
+      function highlightActiveGroup() {
+        document.querySelectorAll('.group-btn').forEach(btn => {
+          if (btn.getAttribute('data-group') === activeGroup) {
+            btn.classList.add('active');
+          } else if (!btn.getAttribute('data-group') && !activeGroup) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
       }
 
       async function displayTags(tags) {
         const container = document.getElementById('tagsContainer');
         container.innerHTML = '';
-
         for (const tag of tags) {
           const translatedDescription = await translateText(tag.Description);
           const card = document.createElement('div');
@@ -140,26 +136,22 @@
         }
       }
 
+      function searchInputChanged() {
+        if (document.getElementById('searchInput').value.trim() !== '') {
+          activeGroup = ''; // deselect group when typing
+          highlightActiveGroup();
+        }
+        filterTags();
+      }
+
       function filterTags() {
-  const query = document.getElementById('searchInput').value.toLowerCase();
-  let filtered;
-
-  if (query.trim() !== '') {
-    // If search input is present, show results from the entire dataset
-    filtered = tagData.filter(tag =>
-      tag.Tag.toLowerCase().includes(query) ||
-      tag.Description.toLowerCase().includes(query)
-    );
-  } else {
-    // If no search input, show based on active group
-    filtered = tagData.filter(tag =>
-      !activeGroup || tag.Group === activeGroup
-    );
-  }
-
-  displayTags(filtered);
-}
-
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        let filtered = tagData.filter(tag =>
+          tag.Tag.toLowerCase().includes(query) ||
+          tag.Description.toLowerCase().includes(query)
+        );
+        displayTags(filtered);
+      }
 
       function clearSearch() {
         document.getElementById('searchInput').value = '';
