@@ -18,17 +18,17 @@
 <body>
 
 <h2>Agent Tag Finder</h2>
-<p>Select a category to view tags and descriptions. Click 'Copy Tag' to copy the tag easily.</p>
+<p>Select a group to view tags and descriptions. Click 'Copy Tag' to copy the tag easily.</p>
 
 <select id="categorySelector">
-  <option value="">-- Select Category --</option>
+  <option value="">-- Select Group --</option>
 </select>
 
 <div id="tagsContainer"></div>
 
 <script>
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';  
-let tagData = [];
+  const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
+  let tagData = [];
 
   fetch(sheetURL)
     .then(response => response.text())
@@ -39,7 +39,7 @@ let tagData = [];
     });
 
   function populateCategories() {
-    const categories = [...new Set(tagData.map(row => row.Category).filter(Boolean))];
+    const categories = [...new Set(tagData.map(row => row.Group).filter(Boolean))];
     const selector = document.getElementById('categorySelector');
     categories.forEach(category => {
       const option = document.createElement('option');
@@ -58,7 +58,7 @@ let tagData = [];
     const container = document.getElementById('tagsContainer');
     container.innerHTML = '';
 
-    const filtered = tagData.filter(row => row.Category === category);
+    const filtered = tagData.filter(row => row.Group === category);
 
     filtered.forEach(tag => {
       const card = document.createElement('div');
