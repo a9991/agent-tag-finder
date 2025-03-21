@@ -6,11 +6,13 @@
   <title>Agent Tag Finder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    select, button { margin: 10px 0; padding: 10px; }
-    .tag-card { border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .tag-title { font-weight: bold; font-size: 1.1em; }
-    .copy-btn { margin-top: 5px; cursor: pointer; background-color: #f0f0f0; padding: 5px 10px; border-radius: 5px; border: none; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    h2 { font-size: 2rem; margin-bottom: 10px; }
+    select, button { margin: 10px 0; padding: 10px; width: 300px; font-size: 1rem; }
+    .tag-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .tag-title { font-weight: bold; font-size: 1.1em; margin-bottom: 6px; }
+    .copy-btn { margin-top: 8px; cursor: pointer; background-color: #007bff; color: white; padding: 6px 12px; border-radius: 5px; border: none; font-size: 0.9rem; }
+    .copy-btn:hover { background-color: #0056b3; }
   </style>
 </head>
 <body>
@@ -25,7 +27,6 @@
 <div id="tagsContainer"></div>
 
 <script>
- 
   const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTBplCT7ffjwI2rAy_XFMB7yuGjki8nQ0K2KPfzh4XD7K8BYUXG0njg8Y6_cue6dOqd54V3ga-N_zz/pub?output=csv';
   let tagData = [];
 
