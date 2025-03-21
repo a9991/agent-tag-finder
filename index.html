@@ -45,13 +45,12 @@
       <button id="arBtn" onclick="setLanguage('ar')">Arabic</button>
     </div>
     <div class="search-bar">
-      <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="searchInputChanged()">
+      <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="filterTags()">
       <button class="clear-btn" onclick="clearSearch()">×</button>
     </div>
     <div class="group-buttons" id="groupButtonsContainer"></div>
     <div id="tagsContainer"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
       const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
       let tagData = [];
@@ -136,20 +135,13 @@
         }
       }
 
-      function searchInputChanged() {
-        if (document.getElementById('searchInput').value.trim() !== '') {
-          activeGroup = ''; // deselect group when typing
-          highlightActiveGroup();
-        }
-        filterTags();
-      }
-
       function filterTags() {
         const query = document.getElementById('searchInput').value.toLowerCase();
-        let filtered = tagData.filter(tag =>
-          tag.Tag.toLowerCase().includes(query) ||
-          tag.Description.toLowerCase().includes(query)
-        );
+        let filtered = tagData.filter(tag => {
+          const matchesGroup = !activeGroup || tag.Group === activeGroup;
+          const matchesQuery = tag.Tag.toLowerCase().includes(query) || tag.Description.toLowerCase().includes(query);
+          return matchesGroup && matchesQuery;
+        });
         displayTags(filtered);
       }
 
