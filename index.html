@@ -22,6 +22,8 @@
     .group-btn { padding: 8px 14px; border: none; border-radius: 20px; background-color: #ffce00; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s; }
     .group-btn.active { background-color: #ffa500; }
     .group-btn:hover { background-color: #ffc107; }
+    .all-tags-btn { background-color: #007bff !important; color: #fff !important; font-weight: bold; }
+    .all-tags-btn:hover { background-color: #0069d9 !important; }
     #tagsContainer { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
     .tag-card { background: #ffffff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f4f4f4; transition: transform 0.2s; }
     .tag-card:hover { transform: translateY(-4px); }
@@ -129,7 +131,7 @@
 
         const allBtn = document.createElement('button');
         allBtn.textContent = currentLang === 'ar' ? 'كل العلامات' : 'All Tags';
-        allBtn.className = 'group-btn';
+        allBtn.className = 'group-btn all-tags-btn';
         allBtn.onclick = () => { activeGroup = ''; filterTags(); highlightActiveGroup(); };
         container.appendChild(allBtn);
 
