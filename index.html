@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
     body { font-family: 'Helvetica Neue', sans-serif; background: #fff9f3; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 950px; width: 100%; }
+    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 950px; width: 100%; position: relative; }
     header { display: flex; align-items: center; margin-bottom: 20px; justify-content: center; }
     header img { height: 60px; margin-right: 15px; border-radius: 8px; }
     header h1 { font-size: 2rem; margin: 0; color: #2b2b2b; }
@@ -29,6 +28,7 @@
     .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.1em; }
     .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 8px 14px; border-radius: 8px; border: none; font-size: 0.9rem; transition: background-color 0.3s; }
     .copy-btn.copied { background-color: #88d498; color: #fff; }
+    #status { text-align: center; margin-bottom: 20px; font-size: 0.95rem; color: #555; }
   </style>
 </head>
 <body>
@@ -38,8 +38,9 @@
       <h1>NowNow CS Chat Tags Finder</h1>
     </header>
     <p class="instructions">
-      Choose your language, then select a group below to filter the available tags. <br>
-      You can also search using keywords. <br>Find the correct tag, copy and paste it on SalesIQ easily!
+      Choose your language, then select a group below to filter the available tags.<br>
+      You can also search using keywords.<br>
+      Find the correct tag, copy and paste it on SalesIQ easily!
     </p>
     <div class="lang-toggle">
       <button id="enBtn" class="active" onclick="setLanguage('en')">English</button>
@@ -49,23 +50,47 @@
       <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="filterTags()">
       <button class="clear-btn" onclick="clearSearch()">×</button>
     </div>
+    <div id="status"></div>
     <div class="group-buttons" id="groupButtonsContainer"></div>
     <div id="tagsContainer"></div>
 
     <script>
       const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
+      const localCacheKey = 'nownow_tag_cache';
       let tagData = [];
       let currentLang = 'en';
       let activeGroup = '';
+      const translationCache = new Map();
 
-      fetch(sheetURL)
-        .then(response => response.text())
-        .then(csvText => {
+      loadTagData();
+
+      function setStatus(message) {
+        document.getElementById('status').textContent = message;
+      }
+
+      async function loadTagData() {
+        setStatus('Loading tags...');
+        try {
+          const response = await fetch(sheetURL);
+          const csvText = await response.text();
           const parsed = Papa.parse(csvText, { header: true });
-          tagData = parsed.data;
-          populateGroupButtons();
-          displayTags(tagData);
-        });
+          tagData = parsed.data.filter(row => row.Tag);
+          localStorage.setItem(localCacheKey, JSON.stringify(tagData));
+        } catch (e) {
+          const cached = localStorage.getItem(localCacheKey);
+          if (cached) {
+            tagData = JSON.parse(cached);
+            setStatus('You are offline. Showing cached data.');
+          } else {
+            setStatus('Failed to load tag data. Please try again later.');
+            return;
+          }
+        }
+        await preloadTranslations(tagData);
+        populateGroupButtons();
+        displayTags(tagData);
+        setStatus(`${tagData.length} tags loaded.`);
+      }
 
       function setLanguage(lang) {
         currentLang = lang;
@@ -76,14 +101,25 @@
       }
 
       async function translateText(text) {
-        if (currentLang !== 'ar') return text;
+        if (currentLang !== 'ar' || !text) return text;
+        if (translationCache.has(text)) return translationCache.get(text);
         try {
-          const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(text)}`);
-          const result = await response.json();
-          return result[0][0][0];
+          const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(text)}`);
+          const json = await res.json();
+          const translated = json[0][0][0];
+          translationCache.set(text, translated);
+          return translated;
         } catch {
           return text;
         }
+      }
+
+      async function preloadTranslations(data) {
+        if (currentLang !== 'ar') return;
+        const descs = [...new Set(data.map(d => d.Description))];
+        await Promise.all(descs.map(desc => translateText(desc)));
+        const groups = [...new Set(data.map(d => d.Group).filter(Boolean))];
+        await Promise.all(groups.map(group => translateText(group)));
       }
 
       async function populateGroupButtons() {
@@ -110,20 +146,15 @@
 
       function highlightActiveGroup() {
         document.querySelectorAll('.group-btn').forEach(btn => {
-          if (btn.getAttribute('data-group') === activeGroup) {
-            btn.classList.add('active');
-          } else if (!btn.getAttribute('data-group') && !activeGroup) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
+          const btnGroup = btn.getAttribute('data-group') || '';
+          btn.classList.toggle('active', btnGroup === activeGroup);
         });
       }
 
-      async function displayTags(tags) {
+      function displayTags(tags) {
         const container = document.getElementById('tagsContainer');
         container.innerHTML = '';
-        for (const tag of tags) {
+        const translated = tags.map(async tag => {
           const translatedDescription = await translateText(tag.Description);
           const card = document.createElement('div');
           card.className = 'tag-card';
@@ -133,17 +164,19 @@
             <button class="copy-btn" onclick="copyToClipboard('${tag.Tag}', this)">Copy Tag</button>
           `;
           container.appendChild(card);
-        }
+        });
+        Promise.all(translated);
       }
 
       function filterTags() {
         const query = document.getElementById('searchInput').value.toLowerCase();
-        let filtered = tagData.filter(tag => {
-          const matchesGroup = !activeGroup || tag.Group === activeGroup;
-          const matchesQuery = tag.Tag.toLowerCase().includes(query) || tag.Description.toLowerCase().includes(query);
-          return matchesGroup && matchesQuery;
+        const filtered = tagData.filter(tag => {
+          const inGroup = !activeGroup || tag.Group === activeGroup;
+          const inQuery = tag.Tag.toLowerCase().includes(query) || tag.Description.toLowerCase().includes(query);
+          return inGroup && inQuery;
         });
         displayTags(filtered);
+        setStatus(`${filtered.length} tag(s) found.`);
       }
 
       function clearSearch() {
