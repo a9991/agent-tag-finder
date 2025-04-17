@@ -30,7 +30,23 @@
     .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.1em; }
     .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 8px 14px; border-radius: 8px; border: none; font-size: 0.9rem; transition: background-color 0.3s; }
     .copy-btn.copied { background-color: #88d498; color: #fff; }
-    #status { text-align: center; margin-bottom: 20px; font-size: 0.95rem; color: #555; }
+    #status { text-align: center; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
+    #lastUpdated { text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 16px; }
+    .spinner { text-align: center; margin-bottom: 10px; }
+    .spinner:after {
+      content: " ";
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3px solid #ffce00;
+      border-color: #ffce00 transparent #ffce00 transparent;
+      animation: spin 1.2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -52,46 +68,29 @@
       <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="filterTags()">
       <button class="clear-btn" onclick="clearSearch()">×</button>
     </div>
+    <div class="spinner" id="spinner"></div>
     <div id="status"></div>
+    <div id="lastUpdated"></div>
     <div class="group-buttons" id="groupButtonsContainer"></div>
     <div id="tagsContainer"></div>
 
     <script>
       const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
       const localCacheKey = 'nownow_tag_cache';
+      const cacheExpiryKey = 'nownow_tag_cache_expiry';
+      const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
       let tagData = [];
       let currentLang = 'en';
       let activeGroup = '';
       const translationCache = new Map();
 
-      loadTagData();
-
       function setStatus(message) {
         document.getElementById('status').textContent = message;
       }
 
-      async function loadTagData() {
-        setStatus('Loading tags...');
-        try {
-          const response = await fetch(sheetURL);
-          const csvText = await response.text();
-          const parsed = Papa.parse(csvText, { header: true });
-          tagData = parsed.data.filter(row => row.Tag);
-          localStorage.setItem(localCacheKey, JSON.stringify(tagData));
-        } catch (e) {
-          const cached = localStorage.getItem(localCacheKey);
-          if (cached) {
-            tagData = JSON.parse(cached);
-            setStatus('You are offline. Showing cached data.');
-          } else {
-            setStatus('Failed to load tag data. Please try again later.');
-            return;
-          }
-        }
-        await preloadTranslations(tagData);
-        populateGroupButtons();
-        displayTags(tagData);
-        setStatus(`${tagData.length} tags loaded.`);
+      function setLastUpdated(timestamp) {
+        const date = new Date(timestamp);
+        document.getElementById('lastUpdated').textContent = `Last updated: ${date.toLocaleString()}`;
       }
 
       function setLanguage(lang) {
@@ -196,6 +195,48 @@
           }, 1500);
         });
       }
+
+      async function loadTagData() {
+        setStatus('Loading tags...');
+        document.getElementById('spinner').style.display = 'block';
+        const now = Date.now();
+        const expiry = parseInt(localStorage.getItem(cacheExpiryKey), 10);
+        const cached = localStorage.getItem(localCacheKey);
+
+        if (cached && expiry && now < expiry) {
+          tagData = JSON.parse(cached);
+          setLastUpdated(expiry - CACHE_DURATION_MS);
+          setStatus('Loaded from cache.');
+        } else {
+          try {
+            const response = await fetch(sheetURL);
+            const csvText = await response.text();
+            const parsed = Papa.parse(csvText, { header: true });
+            tagData = parsed.data.filter(row => row.Tag);
+            localStorage.setItem(localCacheKey, JSON.stringify(tagData));
+            localStorage.setItem(cacheExpiryKey, now + CACHE_DURATION_MS);
+            setLastUpdated(now);
+            setStatus('Fresh data loaded.');
+          } catch (e) {
+            if (cached) {
+              tagData = JSON.parse(cached);
+              setLastUpdated(expiry - CACHE_DURATION_MS);
+              setStatus('Offline. Showing possibly outdated cached data.');
+            } else {
+              setStatus('Failed to load tag data. Please try again later.');
+              return;
+            }
+          }
+        }
+
+        await preloadTranslations(tagData);
+        populateGroupButtons();
+        displayTags(tagData);
+        setStatus(`${tagData.length} tag(s) loaded.`);
+        document.getElementById('spinner').style.display = 'none';
+      }
+
+      loadTagData();
     </script>
   </div>
 </body>
