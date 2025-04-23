@@ -8,18 +8,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
     body { font-family: 'Helvetica Neue', sans-serif; background: #fff9f3; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 950px; width: 100%; position: relative; }
-    header { display: flex; align-items: center; margin-bottom: 20px; justify-content: center; }
+    .container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 30px; max-width: 950px; width: 100%; position: relative; box-sizing: border-box; }
+    header { display: flex; align-items: center; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
     header img { height: 60px; margin-right: 15px; border-radius: 8px; }
     header h1 { font-size: 2rem; margin: 0; color: #2b2b2b; }
-    .lang-toggle { text-align: center; margin-bottom: 20px; }
+    .lang-toggle { text-align: center; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
     .lang-toggle button { margin: 5px; padding: 10px 20px; border: 1px solid #ffce00; border-radius: 20px; background: #fff; cursor: pointer; font-weight: bold; }
     .lang-toggle button.active { background: #ffce00; }
     .instructions-box { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
-    .instruction { flex: 1; background: #fff7e6; padding: 16px; border-radius: 12px; border: 1px solid #ffe7b3; font-size: 0.95rem; line-height: 1.5; }
+    .instruction { flex: 1; background: #fff7e6; padding: 16px; border-radius: 12px; border: 1px solid #ffe7b3; font-size: 0.95rem; line-height: 1.5; color: #2b2b2b; }
     .instruction.ar { direction: rtl; text-align: right; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .search-bar { position: relative; width: 100%; margin-bottom: 20px; }
-    .search-bar input { width: 100%; padding: 12px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; }
+    .search-bar input { width: 100%; padding: 12px; border: 1px solid #ffce00; border-radius: 8px; background-color: #fff7e6; color: #2b2b2b; }
     .clear-btn { position: absolute; right: 10px; top: 10px; cursor: pointer; border: none; background: none; font-size: 1.2rem; color: #777; }
     .group-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
     .group-btn { padding: 8px 14px; border: none; border-radius: 20px; background-color: #ffce00; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s; }
@@ -27,7 +27,11 @@
     .group-btn:hover { background-color: #ffc107; }
     .all-tags-btn { background-color: #007bff !important; color: #fff !important; font-weight: bold; }
     .all-tags-btn:hover { background-color: #0069d9 !important; }
-    #tagsContainer { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    #tagsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
     .tag-card { background: #ffffff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f4f4f4; transition: transform 0.2s; }
     .tag-card:hover { transform: translateY(-4px); }
     .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.1em; }
@@ -51,6 +55,150 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Marquee Styles */
+    .marquee {
+      overflow: hidden;
+      background: #ffce00;
+      color: #2b2b2b;
+      padding: 10px 0;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      position: relative;
+    }
+    .marquee-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 15s linear infinite;
+    }
+    .marquee-content span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0 20px;
+    }
+    .marquee-content strong {
+      font-weight: bold;
+    }
+    .marquee:hover .marquee-content {
+      animation-play-state: paused;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Dark Mode Toggle Switch */
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 5px;
+    }
+    .toggle-wrapper span {
+      font-size: 1rem;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "🌙";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    input:checked + .slider {
+      background-color: #ff9900;
+    }
+    input:checked + .slider:before {
+      content: "☀️";
+      transform: translateX(26px);
+    }
+
+    /* Dark Mode Styles */
+    [data-theme="dark"] {
+      background: #1a1a1a;
+    }
+    [data-theme="dark"] .container {
+      background: #2b2b2b;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    [data-theme="dark"] header h1 {
+      color: #f0f0f0;
+    }
+    [data-theme="dark"] .instruction {
+      background: #3a3a3a;
+      border-color: #555;
+      color: #f0f0f0;
+    }
+    [data-theme="dark"] .tag-card {
+      background: #3a3a3a;
+      border-color: #444;
+    }
+    [data-theme="dark"] .tag-title {
+      color: #ffcc00;
+    }
+    [data-theme="dark"] .tag-card div {
+      color: #f0f0f0;
+    }
+    [data-theme="dark"] .marquee-content span {
+      color: #f0f0f0;
+    }
+    [data-theme="dark"] #status {
+      color: #cccccc;
+    }
+    [data-theme="dark"] #lastUpdatedText {
+      color: #cccccc;
+    }
+    [data-theme="dark"] .search-bar input {
+      background: #444;
+      color: #f0f0f0;
+      border-color: #666;
+    }
+    [data-theme="dark"] .clear-btn {
+      color: #cccccc;
+    }
+    [data-theme="dark"] .group-btn {
+      background: #555;
+      color: #f0f0f0;
+    }
+    [data-theme="dark"] .group-btn.active {
+      background: #ff9900;
+    }
+    [data-theme="dark"] .marquee {
+      background: #444;
+    }
+    [data-theme="dark"] #refreshBtn {
+      background: #555;
+      color: #f0f0f0;
+    }
   </style>
 </head>
 <body>
@@ -59,6 +207,11 @@
       <img src="https://f.nooncdn.com/nownow/Banners_Prod/now-now-web-landing-2x_kJlhLnX0G.png" alt="NowNow Logo">
       <h1>NowNow CS Chat Tags Finder</h1>
     </header>
+    <div class="marquee">
+      <div class="marquee-content">
+        <span id="marqueeText"></span>
+      </div>
+    </div>
     <div class="instructions-box">
       <div class="instruction">
         Choose your language, then select a group below to filter the available tags.<br>
@@ -74,6 +227,12 @@
     <div class="lang-toggle">
       <button id="enBtn" class="active" onclick="setLanguage('en')">English</button>
       <button id="arBtn" onclick="setLanguage('ar')">Arabic</button>
+      <div class="toggle-wrapper">
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
     <div class="search-bar">
       <input type="text" placeholder="Search tags or descriptions..." id="searchInput" oninput="filterTags()">
@@ -113,12 +272,29 @@
         loadTagData();
       }
 
+      function updateMarqueeText() {
+        const marqueeText = document.getElementById('marqueeText');
+        if (currentLang === 'ar') {
+          marqueeText.innerHTML = '🚨 من المهم أن تضع علامة على كل محادثة باستخدام <strong>العلامات الصحيحة</strong> 🚨';
+        } else {
+          marqueeText.innerHTML = '🚨 It\'s important that you tag every chat using the <strong>Correct tags</strong> 🚨';
+        }
+      }
+
       function setLanguage(lang) {
         currentLang = lang;
         document.getElementById('enBtn').classList.toggle('active', lang === 'en');
         document.getElementById('arBtn').classList.toggle('active', lang === 'ar');
+        updateMarqueeText();
         populateGroupButtons();
         filterTags();
+      }
+
+      function toggleDarkMode() {
+        const toggle = document.getElementById('darkModeToggle');
+        const currentTheme = toggle.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        localStorage.setItem('theme', currentTheme);
       }
 
       async function translateText(text) {
@@ -172,17 +348,18 @@
         });
       }
 
-      function displayTags(tags) {
+      async function displayTags(tags) {
         const container = document.getElementById('tagsContainer');
         container.innerHTML = '';
         const translated = tags.map(async tag => {
           const translatedDescription = await translateText(tag.Description);
+          const escapedTag = tag.Tag.replace(/'/g, "\\'").replace(/"/g, '\\"');
           const card = document.createElement('div');
           card.className = 'tag-card';
           card.innerHTML = `
             <div class="tag-title">${tag.Tag}</div>
             <div>${translatedDescription}</div>
-            <button class="copy-btn" onclick="copyToClipboard('${tag.Tag}', this)">Copy Tag</button>
+            <button class="copy-btn" onclick="copyToClipboard('${escapedTag}', this)">Copy Tag</button>
           `;
           container.appendChild(card);
         });
@@ -206,14 +383,46 @@
       }
 
       function copyToClipboard(tag, buttonElement) {
-        navigator.clipboard.writeText(tag).then(() => {
-          buttonElement.classList.add('copied');
-          buttonElement.textContent = 'Copied!';
-          setTimeout(() => {
-            buttonElement.classList.remove('copied');
-            buttonElement.textContent = 'Copy Tag';
-          }, 1500);
-        });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(tag).then(() => {
+            buttonElement.classList.add('copied');
+            buttonElement.textContent = 'Copied!';
+            setTimeout(() => {
+              buttonElement.classList.remove('copied');
+              buttonElement.textContent = 'Copy Tag';
+            }, 1500);
+          }).catch(err => {
+            console.error('Clipboard API failed:', err);
+            fallbackCopyToClipboard(tag, buttonElement);
+          });
+        } else {
+          fallbackCopyToClipboard(tag, buttonElement);
+        }
+      }
+
+      function fallbackCopyToClipboard(tag, buttonElement) {
+        const textarea = document.createElement('textarea');
+        textarea.value = tag;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          const successful = document.execCommand('copy');
+          if (successful) {
+            buttonElement.classList.add('copied');
+            buttonElement.textContent = 'Copied!';
+            setTimeout(() => {
+              buttonElement.classList.remove('copied');
+              buttonElement.textContent = 'Copy Tag';
+            }, 1500);
+          } else {
+            setStatus('Failed to copy tag. Please copy manually.');
+          }
+        } catch (err) {
+          console.error('Fallback copy failed:', err);
+          setStatus('Failed to copy tag. Please copy manually.');
+        } finally {
+          document.body.removeChild(textarea);
+        }
       }
 
       async function loadTagData() {
@@ -254,9 +463,16 @@
         displayTags(tagData);
         setStatus(`${tagData.length} tag(s) loaded.`);
         document.getElementById('spinner').style.display = 'none';
+        updateMarqueeText();
       }
 
-      loadTagData();
+      // Apply saved theme on load
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('darkModeToggle').checked = savedTheme === 'dark';
+        loadTagData();
+      });
     </script>
   </div>
 </body>
