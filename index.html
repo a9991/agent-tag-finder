@@ -47,20 +47,99 @@
     #tagsContainer.loaded {
       opacity: 1;
     }
-    .tag-card { background: #ffffff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f4f4f4; transition: transform 0.2s, border-color 0.3s; }
-    .tag-card:hover { transform: scale(1.02); border-color: #ff9900; }
-    .tag-title { font-weight: 600; color: #e68a00; margin-bottom: 10px; font-size: 1.1em; }
-    .copy-btn { margin-top: 12px; cursor: pointer; background: linear-gradient(45deg, #ffce00, #ffa500); color: #000; padding: 8px 14px; border-radius: 8px; border: none; font-size: 0.9rem; transition: background-color 0.3s; }
-    .copy-btn:focus { outline: 2px solid #ff9900; outline-offset: 2px; }
-    #status { text-align: center; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
-    #status.error { color: #d32f2f; }
-    #retryBtn { font-size: 0.95rem; background: #ffce00; color: #000; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; margin-left: 8px; transition: background-color 0.3s; }
-    #retryBtn:hover { background: #ffa500; }
-    #retryBtn:focus { outline: 2px solid #ff9900; outline-offset: 2px; }
-    #lastUpdated { text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 8px; }
-    #refreshBtn { font-size: 0.7rem; background: #ddd; color: #333; border: none; padding: 4px 8px; border-radius: 8px; cursor: pointer; margin-left: 8px; transition: background-color 0.3s; }
-    #refreshBtn:hover { background: #ccc; }
-    #refreshBtn:focus { outline: 2px solid #ff9900; outline-offset: 2px; }
+    .tag-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #f4f4f4;
+      transition: transform 0.2s, border-color 0.3s;
+      overflow: hidden; /* Prevent overflow */
+    }
+    .tag-card:hover {
+      transform: scale(1.02);
+      border-color: #ff9900;
+    }
+    .tag-title {
+      font-weight: 600;
+      color: #e68a00;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      overflow-wrap: break-word; /* Break long words */
+      padding-right: 10px; /* Add padding for wrapped text */
+    }
+    .tag-card div {
+      overflow-wrap: break-word; /* Wrap description text */
+      white-space: normal; /* Allow wrapping */
+      margin-bottom: 10px; /* Add spacing */
+      padding-right: 10px; /* Add padding for wrapped text */
+    }
+    .copy-btn {
+      margin-top: 12px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #ffce00, #ffa500);
+      color: #000;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+    .copy-btn:focus {
+      outline: 2px solid #ff9900;
+      outline-offset: 2px;
+    }
+    #status {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    #status.error {
+      color: #d32f2f;
+    }
+    #retryBtn {
+      font-size: 0.95rem;
+      background: #ffce00;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: background-color 0.3s;
+    }
+    #retryBtn:hover {
+      background: #ffa500;
+    }
+    #retryBtn:focus {
+      outline: 2px solid #ff9900;
+      outline-offset: 2px;
+    }
+    #lastUpdated {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    #refreshBtn {
+      font-size: 0.7rem;
+      background: #ddd;
+      color: #333;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: background-color 0.3s;
+    }
+    #refreshBtn:hover {
+      background: #ccc;
+    }
+    #refreshBtn:focus {
+      outline: 2px solid #ff9900;
+      outline-offset: 2px;
+    }
 
     /* Enhanced Loading Spinner with Overlay */
     .loading-overlay {
