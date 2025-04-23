@@ -25,16 +25,40 @@
     .group-btn { padding: 8px 14px; border: none; border-radius: 20px; background-color: #ffce00; cursor: pointer; font-size: 0.9rem; transition: background-color 0.3s; }
     .group-btn.active { background-color: #ffa500; }
     .group-btn:hover { background-color: #ffc107; }
-    .all-tags-btn { background-color: #007bff !important; color: #fff !important; font-weight: bold; }
+    .all-tags-btn {
+      background-color: #007bff !important;
+      color: #fff !important;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
     .all-tags-btn:hover { background-color: #0069d9 !important; }
+    .all-tags-btn.active { background-color: #ff9900 !important; }
+    .all-tags-btn.active:hover { background-color: #ffaa33 !important; }
     #tagsContainer {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 16px;
     }
-    .tag-card { background: #ffffff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f4f4f4; transition: transform 0.2s; }
+    .tag-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #f4f4f4;
+      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
     .tag-card:hover { transform: translateY(-4px); }
-    .tag-title { font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.1em; }
+    .tag-title {
+      font-weight: bold;
+      color: #ff9900;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
     .copy-btn { margin-top: 12px; cursor: pointer; background-color: #ffce00; color: #000; padding: 8px 14px; border-radius: 8px; border: none; font-size: 0.9rem; transition: background-color 0.3s; }
     .copy-btn.copied { background-color: #88d498; color: #fff; }
     #status { text-align: center; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
@@ -199,6 +223,18 @@
       background: #555;
       color: #f0f0f0;
     }
+    [data-theme="dark"] .all-tags-btn {
+      background-color: #339af0 !important;
+    }
+    [data-theme="dark"] .all-tags-btn:hover {
+      background-color: #1c7ed6 !important;
+    }
+    [data-theme="dark"] .all-tags-btn.active {
+      background-color: #ff9900 !important;
+    }
+    [data-theme="dark"] .all-tags-btn.active:hover {
+      background-color: #ffaa33 !important;
+    }
   </style>
 </head>
 <body>
@@ -327,7 +363,12 @@
         const allBtn = document.createElement('button');
         allBtn.textContent = currentLang === 'ar' ? 'كل العلامات' : 'All Tags';
         allBtn.className = 'group-btn all-tags-btn';
-        allBtn.onclick = () => { activeGroup = ''; filterTags(); highlightActiveGroup(); };
+        allBtn.onclick = () => {
+          activeGroup = '';
+          document.getElementById('searchInput').value = '';
+          filterTags();
+          highlightActiveGroup();
+        };
         container.appendChild(allBtn);
 
         for (const category of categories) {
@@ -335,7 +376,11 @@
           btn.className = 'group-btn';
           btn.textContent = await translateText(category);
           btn.setAttribute('data-group', category);
-          btn.onclick = () => { activeGroup = category; filterTags(); highlightActiveGroup(); };
+          btn.onclick = () => {
+            activeGroup = category;
+            filterTags();
+            highlightActiveGroup();
+          };
           container.appendChild(btn);
         }
         highlightActiveGroup();
@@ -368,13 +413,19 @@
 
       function filterTags() {
         const query = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = tagData.filter(tag => {
-          const inGroup = !activeGroup || tag.Group === activeGroup;
-          const inQuery = tag.Tag.toLowerCase().includes(query) || tag.Description.toLowerCase().includes(query);
-          return inGroup && inQuery;
-        });
+        let filtered = tagData;
+
+        if (query) {
+          filtered = tagData.filter(tag =>
+            tag.Tag.toLowerCase().includes(query) || tag.Description.toLowerCase().includes(query)
+          );
+          setStatus(`${filtered.length} tag(s) found across all groups.`);
+        } else {
+          filtered = tagData.filter(tag => !activeGroup || tag.Group === activeGroup);
+          setStatus(`${filtered.length} tag(s) found.`);
+        }
+
         displayTags(filtered);
-        setStatus(`${filtered.length} tag(s) found.`);
       }
 
       function clearSearch() {
@@ -466,7 +517,6 @@
         updateMarqueeText();
       }
 
-      // Apply saved theme on load
       document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
