@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NowNow Tag Manager</title>
+  <title>Chat Tags Manager</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
     body {
@@ -117,6 +117,8 @@
       font-weight: bold;
       font-size: 1rem;
       transition: transform 0.2s;
+      width: 100px; /* Fixed width to ensure buttons are the same size */
+      text-align: center; /* Center text inside buttons */
     }
 
     .lang-toggle button.active {
@@ -137,6 +139,7 @@
       align-items: center;
       gap: 8px;
       margin-top: 10px;
+      justify-content: center; /* Center the toggle switch */
     }
 
     .toggle-switch {
@@ -694,15 +697,11 @@
   </header>
   <div class="container">
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <h3>Filter Tags</h3>
-      </div>
       <div class="lang-toggle">
         <button id="enBtn" class="active" onclick="setLanguage('en')">English</button>
         <button id="arBtn" onclick="setLanguage('ar')">عربي</button>
       </div>
       <div class="toggle-wrapper">
-        <span>Dark Mode</span>
         <label class="toggle-switch">
           <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
           <span class="slider"></span>
