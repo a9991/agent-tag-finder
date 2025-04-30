@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NowNow Tag Manager</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <meta name="robots" content="noindex">
+  <title>NowNow CS Chat Tags Finder</title>
+  <link rel="preload" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js" as="script">
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -37,7 +39,6 @@
     .search-bar {
       flex-grow: 1;
       margin: 0 20px;
-      position: relative;
     }
 
     .search-bar input {
@@ -105,17 +106,17 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
-      align-items: center;
+      align-items: center; /* Center align items */
     }
 
     .lang-toggle button {
-      padding: 10px 20px;
+      padding: 10px 20px; /* Increased padding to match original */
       border: 1px solid #ffce00;
       border-radius: 20px;
       background: #fff;
       cursor: pointer;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 1rem; /* Adjusted font size to match original */
       transition: transform 0.2s;
     }
 
@@ -201,13 +202,6 @@
       margin-top: 20px;
     }
 
-    .group-btn-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      position: relative;
-    }
-
     .group-btn {
       padding: 8px 14px;
       border: none;
@@ -217,8 +211,6 @@
       font-size: 0.9rem;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      position: relative;
-      flex: 1;
     }
 
     .group-btn.active {
@@ -246,142 +238,6 @@
       background: linear-gradient(45deg, #0069d9, #004085) !important;
       transform: scale(1.05);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* New Indicator Styles for Group Buttons */
-    .new-badge {
-      background: #ff6347;
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      border: 2px solid #fff;
-      animation: breathe 2s ease-in-out infinite;
-    }
-
-    @keyframes breathe {
-      0% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.7;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    .new-icon {
-      font-size: 0.9rem;
-      margin-left: 4px;
-      color: #ff6347;
-    }
-
-    .new-glow {
-      box-shadow: 0 0 8px rgba(255, 99, 71, 0.5);
-      border: 1px solid #ff6347;
-    }
-
-    .new-dot::before {
-      content: '•';
-      color: #ff6347;
-      font-size: 1.2rem;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    /* Tag Card Styles */
-    .tag-card-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-
-    .tag-card {
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #f4f4f4;
-      transition: transform 0.2s, border-color 0.3s;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .tag-card:hover {
-      transform: scale(1.02);
-      border-color: #ff9900;
-    }
-
-    .tag-title {
-      font-weight: 600;
-      color: #e68a00;
-      margin-bottom: 10px;
-      font-size: 1.1em;
-      overflow-wrap: break-word;
-      padding-right: 10px;
-    }
-
-    .tag-card div {
-      overflow-wrap: break-word;
-      white-space: normal;
-      margin-bottom: 10px;
-      padding-right: 10px;
-    }
-
-    .copy-btn {
-      margin-top: 12px;
-      cursor: pointer;
-      background: linear-gradient(45deg, #ffce00, #ffa500);
-      color: #000;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: none;
-      font-size: 0.9rem;
-      transition: background-color 0.3s;
-    }
-
-    .copy-btn:focus {
-      outline: 2px solid #ff9900;
-      outline-offset: 2px;
-    }
-
-    /* New Indicator Style for Tag Cards */
-    .tag-new-badge {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: #ff6347;
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      border: 2px solid #fff;
-      animation: breathe 2s ease-in-out infinite;
-      z-index: 1;
-    }
-
-    [data-theme="dark"] .new-badge,
-    [data-theme="dark"] .tag-new-badge {
-      background: #ff6347;
-      color: #fff;
-      border: 2px solid #2b2b2b;
-    }
-
-    [data-theme="dark"] .new-icon {
-      color: #ff6347;
-    }
-
-    [data-theme="dark"] .new-glow {
-      box-shadow: 0 0 8px rgba(255, 99, 71, 0.5);
-      border: 1px solid #ff6347;
-    }
-
-    [data-theme="dark"] .new-dot::before {
-      color: #ff6347;
     }
 
     /* Main Content */
@@ -433,12 +289,12 @@
     }
 
     #refreshBtn {
-      padding: 6px 12px;
+      padding: 6px 12px; /* Smaller padding for a subtle look */
       border: none;
       border-radius: 20px;
       background-color: #ffce00;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.85rem; /* Smaller font size */
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
@@ -467,6 +323,54 @@
 
     #tagsContainer.loaded {
       opacity: 1;
+    }
+
+    .tag-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #f4f4f4;
+      transition: transform 0.2s, border-color 0.3s;
+      overflow: hidden;
+    }
+
+    .tag-card:hover {
+      transform: scale(1.02);
+      border-color: #ff9900;
+    }
+
+    .tag-title {
+      font-weight: 600;
+      color: #e68a00;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      overflow-wrap: break-word;
+      padding-right: 10px;
+    }
+
+    .tag-card div {
+      overflow-wrap: break-word;
+      white-space: normal;
+      margin-bottom: 10px;
+      padding-right: 10px;
+    }
+
+    .copy-btn {
+      margin-top: 12px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #ffce00, #ffa500);
+      color: #000;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+
+    .copy-btn:focus {
+      outline: 2px solid #ff9900;
+      outline-offset: 2px;
     }
 
     .loading-overlay {
@@ -674,77 +578,85 @@
       }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body>
+  <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
   </div>
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Tag copied!</div>
+
+  <!-- Header -->
   <header class="header">
     <div class="branding">
-      <img src="https://yt3.googleusercontent.com/ytc/AIdro_lwQe3zW_4on1h7r0g0z3xETD3ryfL0NaZ8ohiQ=s900-c-k-c0x00ffffff-no-rj" alt="NowNow Logo">
-      <span>NowNow Tag Manager</span>
+      <img src="https://f.nooncdn.com/nownow/Banners_Prod/now-now-web-landing-2x_kJlhLnX0G.png" alt="NowNow Logo">
+      <span>NowNow CS Chat Tags Finder</span>
     </div>
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search tags..." aria-label="Search tags">
-      <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">✖</button>
+      <input type="text" placeholder="Search tags or descriptions..." id="searchInput" aria-label="Search tags or descriptions">
+      <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">×</button>
     </div>
   </header>
+
+  <!-- Main Container -->
   <div class="container">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <h3>Filter Tags</h3>
       </div>
       <div class="lang-toggle">
-        <button id="enBtn" class="active" onclick="setLanguage('en')">English</button>
-        <button id="arBtn" onclick="setLanguage('ar')">عربي</button>
+        <button id="enBtn" class="active" onclick="setLanguage('en')" aria-label="Switch to English">English</button>
+        <button id="arBtn" onclick="setLanguage('ar')" aria-label="Switch to Arabic">Arabic</button>
+        <div class="toggle-wrapper">
+          <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()" aria-label="Toggle dark mode">
+            <span class="slider"></span>
+          </label>
+        </div>
       </div>
-      <div class="toggle-wrapper">
-        <span>Dark Mode</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="group-buttons" id="groupButtonsContainer"></div>
+      <div class="group-buttons" id="groupButtonsContainer" style="display:none;"></div>
     </aside>
+
+    <!-- Main Content -->
     <main class="main-content">
       <div class="marquee">
-        <div class="marquee-content" id="marqueeText">
-          <span>🚨 It's important that you tag every chat using the <strong>Correct tags</strong> 🚨</span>
+        <div class="marquee-content">
+          <span id="marqueeText"></span>
         </div>
       </div>
       <div class="instructions-box">
         <div class="instruction">
-          <p><strong>Instructions:</strong> Use the sidebar to filter tags by group or switch between English and Arabic. Click "Copy Tag" to copy a tag to your clipboard. Use the search bar to find specific tags.</p>
+          Choose your language, then select a group below to filter the available tags.<br>
+          You can also search using keywords.<br>
+          Find the correct tag, copy and paste it on SalesIQ easily!
         </div>
         <div class="instruction ar">
-          <p><strong>التعليمات:</strong> استخدم الشريط الجانبي لتصفية العلامات حسب المجموعة أو التبديل بين الإنجليزية والعربية. انقر على "نسخ العلامة" لنسخ علامة إلى الحافظة. استخدم شريط البحث للعثور على علامات محددة.</p>
+          اختر اللغة، ثم حدد المجموعة أدناه لتصفية العلامات المتاحة.<br>
+          يمكنك أيضًا البحث باستخدام الكلمات الرئيسية.<br>
+          ابحث عن العلامة المناسبة، وانسخها والصقها في SalesIQ بسهولة!
         </div>
       </div>
-      <div id="status">Loading tags...</div>
-      <div id="lastUpdated" class="last-updated">
+      <div id="status"></div>
+      <div id="lastUpdated">
         <span id="lastUpdatedText"></span>
-        <button id="refreshBtn" onclick="refreshData()">Refresh</button>
+        <button id="refreshBtn" onclick="refreshData()" aria-label="Refresh data">Refresh</button>
       </div>
       <div id="tagsContainer"></div>
     </main>
   </div>
-  <div class="toast" id="toast">Tag copied!</div>
 
   <script>
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUHKTNNGidfBRrpme1pUvysor1s-jZ27Zk16acjq62djh-ZTTght15r6uzBIlyZdWc55P8Uu8JDma/pub?gid=1849319999&single=true&output=csv';
     const localCacheKey = 'nownow_tags';
     const cacheExpiryKey = 'nownow_tags_expiry';
-    const seenGroupsKey = 'nownow_seen_groups';
-    const seenTagsKey = 'nownow_seen_tags';
     const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
-    const NEW_TAG_DURATION_MS = 4 * 24 * 60 * 60 * 1000; // 4 days
     let tagData = [];
     let currentLang = 'en';
     let activeGroup = '';
     let searchTimeout = null;
     const translationCache = new Map();
-    const indicatorType = 'badge';
 
     function setStatus(message, isError = false) {
       const statusEl = document.getElementById('status');
@@ -810,12 +722,6 @@
       container.innerHTML = '';
       container.style.display = 'flex';
       const categories = [...new Set(tagData.map(row => row.Group).filter(Boolean))];
-      const seenGroups = JSON.parse(localStorage.getItem(seenGroupsKey) || '{}');
-      const now = Date.now();
-
-      // Create "All Tags" button with wrapper
-      const allBtnWrapper = document.createElement('div');
-      allBtnWrapper.className = 'group-btn-wrapper';
       const allBtn = document.createElement('button');
       allBtn.textContent = currentLang === 'ar' ? 'كل العلامات' : 'All Tags';
       allBtn.className = 'group-btn all-tags-btn';
@@ -825,68 +731,19 @@
         filterTags();
         highlightActiveGroup();
       };
-      allBtnWrapper.appendChild(allBtn);
-      container.appendChild(allBtnWrapper);
-
-      // Create group buttons with wrappers
+      container.appendChild(allBtn);
       for (const category of categories) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'group-btn-wrapper';
-
         const btn = document.createElement('button');
         btn.className = 'group-btn';
-        
-        const isNewInData = tagData.some(row => row.Group === category && row.IsNEW === 'TRUE');
-        const seenTimestamp = seenGroups[category];
-        const isNew = isNewInData && (!seenTimestamp || (now - seenTimestamp < NEW_TAG_DURATION_MS));
-        
-        if (isNew && !seenTimestamp) {
-          seenGroups[category] = now;
-          localStorage.setItem(seenGroupsKey, JSON.stringify(seenGroups));
-        }
-        
-        let className = 'group-btn';
-        if (isNew) {
-          if (indicatorType === 'glow') {
-            className += ' new-glow';
-          } else if (indicatorType === 'dot') {
-            className += ' new-dot';
-          }
-        }
-        btn.className = className;
         btn.textContent = await translateText(category);
-        
         btn.setAttribute('data-group', category);
-        btn.setAttribute('aria-label', currentLang === 'ar' ? `تصفية حسب المجموعة ${category}${isNew ? ' (جديد)' : ''}` : `Filter by group ${category}${isNew ? ' (New)' : ''}`);
+        btn.setAttribute('aria-label', currentLang === 'ar' ? `تصفية حسب المجموعة ${category}` : `Filter by group ${category}`);
         btn.onclick = () => {
           activeGroup = category;
           filterTags();
           highlightActiveGroup();
-          if (isNewInData && !seenGroups[category]) {
-            seenGroups[category] = now;
-            localStorage.setItem(seenGroupsKey, JSON.stringify(seenGroups));
-            populateGroupButtons();
-          }
         };
-        
-        wrapper.appendChild(btn);
-
-        // Add "New" badge or icon outside the button
-        if (isNew) {
-          if (indicatorType === 'badge') {
-            const badge = document.createElement('span');
-            badge.className = 'new-badge';
-            badge.textContent = 'New';
-            wrapper.appendChild(badge);
-          } else if (indicatorType === 'icon') {
-            const icon = document.createElement('span');
-            icon.className = 'new-icon';
-            icon.textContent = '✨';
-            wrapper.appendChild(icon);
-          }
-        }
-
-        container.appendChild(wrapper);
+        container.appendChild(btn);
       }
       highlightActiveGroup();
     }
@@ -901,41 +758,16 @@
     async function displayTags(tags) {
       const container = document.getElementById('tagsContainer');
       container.innerHTML = '';
-      const seenTags = JSON.parse(localStorage.getItem(seenTagsKey) || '{}');
-      const now = Date.now();
-
       const translated = tags.map(async tag => {
         const translatedDescription = await translateText(tag.Description);
         const escapedTag = tag.Tag.replace(/'/g, "\\'").replace(/"/g, '\\"');
-        const isNewInData = tag.IsNEW === 'TRUE';
-        const seenTimestamp = seenTags[tag.Tag];
-        const isNew = isNewInData && (!seenTimestamp || (now - seenTimestamp < NEW_TAG_DURATION_MS));
-        
-        if (isNew && !seenTimestamp) {
-          seenTags[tag.Tag] = now;
-          localStorage.setItem(seenTagsKey, JSON.stringify(seenTags));
-        }
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = 'tag-card-wrapper';
-
         const card = document.createElement('div');
         card.className = 'tag-card';
         card.innerHTML = `
           <div class="tag-title">${tag.Tag}</div>
           <div>${translatedDescription}</div>
-          <button class="copy-btn" onclick="copyToClipboard('${escapedTag}', '${tag.Tag}')" aria-label="Copy tag ${tag.Tag}${isNew ? ' (New)' : ''}">Copy Tag</button>`;
-        
-        wrapper.appendChild(card);
-
-        if (isNew) {
-          const badge = document.createElement('span');
-          badge.className = 'tag-new-badge';
-          badge.textContent = 'New';
-          wrapper.appendChild(badge);
-        }
-
-        container.appendChild(wrapper);
+          <button class="copy-btn" onclick="copyToClipboard('${escapedTag}')" aria-label="Copy tag ${tag.Tag}">Copy Tag</button>`;
+        container.appendChild(card);
       });
       await Promise.all(translated);
       container.classList.add('loaded');
@@ -972,29 +804,20 @@
       setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    function copyToClipboard(tag, tagName) {
-      const now = Date.now();
-      const seenTags = JSON.parse(localStorage.getItem(seenTagsKey) || '{}');
+    function copyToClipboard(tag) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(tag).then(() => {
           showToast();
-          if (!seenTags[tagName]) {
-            seenTags[tagName] = now;
-            localStorage.setItem(seenTagsKey, JSON.stringify(seenTags));
-            filterTags();
-          }
         }).catch(err => {
           console.error('Clipboard API failed:', err);
-          fallbackCopyToClipboard(tag, tagName);
+          fallbackCopyToClipboard(tag);
         });
       } else {
-        fallbackCopyToClipboard(tag, tagName);
+        fallbackCopyToClipboard(tag);
       }
     }
 
-    function fallbackCopyToClipboard(tag, tagName) {
-      const now = Date.now();
-      const seenTags = JSON.parse(localStorage.getItem(seenTagsKey) || '{}');
+    function fallbackCopyToClipboard(tag) {
       const textarea = document.createElement('textarea');
       textarea.value = tag;
       document.body.appendChild(textarea);
@@ -1003,11 +826,6 @@
         const successful = document.execCommand('copy');
         if (successful) {
           showToast();
-          if (!seenTags[tagName]) {
-            seenTags[tagName] = now;
-            localStorage.setItem(seenTagsKey, JSON.stringify(seenTags));
-            filterTags();
-          }
         } else {
           setStatus('Failed to copy tag. Please copy manually.', true);
         }
@@ -1038,7 +856,6 @@
           const csvText = await response.text();
           const parsed = Papa.parse(csvText, { header: true });
           tagData = parsed.data.filter(row => row.Tag);
-          console.log('Parsed tagData:', tagData);
           localStorage.setItem(localCacheKey, JSON.stringify(tagData));
           localStorage.setItem(cacheExpiryKey, now + CACHE_DURATION_MS);
           setLastUpdated(now);
@@ -1068,8 +885,6 @@
     async function refreshData() {
       localStorage.removeItem(localCacheKey);
       localStorage.removeItem(cacheExpiryKey);
-      localStorage.removeItem(seenGroupsKey);
-      localStorage.removeItem(seenTagsKey);
       await loadTagData();
     }
 
